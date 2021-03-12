@@ -1,0 +1,115 @@
+package FProject;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+import java.util.List;
+import java.util.Random;
+
+public class FinalProject {
+    public WebDriver Driver;
+
+
+    @Test
+    public void Search() {
+        System.setProperty("webdriver.chrome.driver","C:\\AUTOMATION\\chromedriver.exe");
+        Driver = new ChromeDriver();
+        Driver.get("https://noriel.ro/");
+        Driver.manage().window().maximize();
+
+        // inchidem mesajul pop up
+
+        WebElement ClickSuntDeAcord = Driver.findElement(By.xpath("//div[@class='daAgree']"));
+        ClickSuntDeAcord.click();
+
+
+
+        // cautam cu ajutorul search barului+ assert passed
+
+        WebElement SelectSearchButton = Driver.findElement(By.id("search"));
+        SelectSearchButton.sendKeys("ursulet");
+        SelectSearchButton.submit();
+
+
+        String ExpectedResultTitle = "Cautati rezultate pentru: ursulet";
+        String ActualResultTitle = Driver.getTitle();
+        Assert.assertEquals(ExpectedResultTitle, ActualResultTitle,"Pagina de detalii nu a fost afisata");
+
+        // click pe logo care face refresh la pagina
+
+        WebElement Logo=Driver.findElement(By.xpath("//a[@class='logo']"));
+        Logo.click();
+        String ExpectedResultTitleAfterRefresh="Noriel";
+        String ActualResultTitleAfterRefresh=Driver.getTitle();
+        Assert.assertEquals(ExpectedResultTitleAfterRefresh,ActualResultTitleAfterRefresh,"Pagina de detalii nu a fost afisata");
+
+
+        // create new account with random email every time + assert passed
+
+        WebElement ClickAutentificareButton=Driver.findElement(By.xpath("//div[@id='authorization-trigger']"));
+        ClickAutentificareButton.click();
+
+        WebElement PressCreateNewAccount=Driver.findElement(By.xpath("//button[@class='mini-login-create']"));
+        PressCreateNewAccount.click();
+
+        WebElement InsertEmail=Driver.findElement(By.id("email_address"));
+        String RandomEmail=""+ System.currentTimeMillis()+"@yahoo.com";
+        InsertEmail.sendKeys(RandomEmail);
+
+        WebElement CreateNewAccountPrenume=Driver.findElement(By.id("firstname"));
+
+        CreateNewAccountPrenume.sendKeys("Podar");
+
+        WebElement CreateNewAccountSurNume=Driver.findElement(By.id("lastname"));
+        CreateNewAccountSurNume.sendKeys("George");
+
+        WebElement CreateAccountInputPassoword=Driver.findElement(By.id("password"));
+        CreateAccountInputPassoword.sendKeys("Test2021");
+
+        WebElement CreateAccountInputPasswordConfirmation=Driver.findElement(By.id("password-confirmation"));
+        CreateAccountInputPasswordConfirmation.sendKeys("Test2021");
+
+        WebElement PressCreateNewAccountButton=Driver.findElement(By.xpath("//button[@type='submit']/span"));
+        PressCreateNewAccountButton.click();
+
+        String ExpectedResultsTitleAfterNewAccountCreated="Adauga adresa noua";
+        String ActualTitle=Driver.getTitle();
+        Assert.assertEquals(ExpectedResultsTitleAfterNewAccountCreated,ActualTitle,"Contul nu a fost creat cu succes");
+
+        //LogOut
+
+        WebElement ApasaContulMeu=Driver.findElement(By.id("authorization-trigger"));
+        ApasaContulMeu.click();
+        WebElement Logout=Driver.findElement(By.xpath("//a[contains(text(),'Logout')]"));
+        Logout.click();
+
+
+        //log in + assert passed
+
+
+        WebElement PressAutentificare=Driver.findElement(By.id("authorization-trigger"));
+        PressAutentificare.click();
+
+        WebElement AutentificareInsertEmail=Driver.findElement(By.id("email"));
+        AutentificareInsertEmail.sendKeys("podar.george@yahoo.com");
+
+        WebElement AutentificareInsertPass=Driver.findElement(By.id("pass"));
+        AutentificareInsertPass.sendKeys("Test2021");
+
+        WebElement AutentificareApasaButon=Driver.findElement(By.xpath("//button[@class='login-mini-submit']"));
+        new WebDriverWait(Driver,10).until(ExpectedConditions.visibilityOf(AutentificareApasaButon));
+        AutentificareApasaButon.click();
+
+        String ExpectedResultTitle2="Adauga adresa noua";
+        String ActualTitle2=Driver.getTitle();
+        Assert.assertEquals(ExpectedResultTitle2,ActualTitle2,"Nu suntem pe pagina dorita");
+
+    }
+}
